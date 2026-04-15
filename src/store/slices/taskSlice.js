@@ -46,7 +46,28 @@ const taskSlice = createSlice({
     setFilters: (state, action) => {
     state.ui.filters = { ...state.ui.filters, ...action.payload };
   },
+  setEditingTask: (state, action) => {
+    state.ui.editingTaskId = action.payload; // Pass ID to open form with data
+  },
   
+  updateTaskOptimistic: (state, action) => {
+    const task = action.payload;
+    state.entities.tasks.byId[task.id] = { ...state.entities.tasks.byId[task.id], ...task };
+  },
+
+  deleteTaskOptimistic: (state, action) => {
+    const id = action.payload;
+    delete state.entities.tasks.byId[id];
+    state.entities.tasks.allIds = state.entities.tasks.allIds.filter(tid => tid !== id);
+  },
+  resetFilters: (state) => {
+  state.ui.filters = {
+    search: '',
+    project: '',
+    status: 'all',
+    taskType: 'all'
+  };
+}
   }
 });
 
@@ -56,5 +77,9 @@ export const {
   addTaskOptimistic, 
   rollbackCreate, 
   setFilters,
+  setEditingTask,
+  updateTaskOptimistic,
+  deleteTaskOptimistic,
+  resetFilters 
 } = taskSlice.actions;
 export default taskSlice.reducer;

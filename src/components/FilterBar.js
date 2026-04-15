@@ -1,10 +1,21 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilters, resetFilters } from '../store/slices/taskSlice';
 
 const FilterBar = () => {
+  const dispatch = useDispatch();
   const { users, projects } = useSelector(state => state.tasks.entities);
   // Get current filter values to make the inputs "controlled"
   const filters = useSelector(state => state.tasks.ui.filters);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    dispatch(setFilters({ [name]: value }));
+  };
+
+  const handleReset = () => {
+    dispatch(resetFilters());
+  };
 
   return (
     <div className="row g-3 bg-white p-3 rounded shadow-sm align-items-end">
@@ -15,12 +26,13 @@ const FilterBar = () => {
           className="form-control" 
           placeholder="Search tasks..." 
           value={filters.search} // Controlled component
+          onChange={handleFilterChange}
         />
       </div>
       
       <div className="col-md-2">
         <label className="form-label small fw-bold">Project</label>
-        <select name="project" className="form-select" value={filters.project} >
+        <select name="project" className="form-select" value={filters.project} onChange={handleFilterChange}>
           <option value="">All Projects</option>
           {Object.values(projects.byId).map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
         </select>
@@ -28,7 +40,7 @@ const FilterBar = () => {
 
       <div className="col-md-2">
         <label className="form-label small fw-bold">Status</label>
-        <select name="status" className="form-select" value={filters.status}>
+        <select name="status" className="form-select" value={filters.status} onChange={handleFilterChange}>
           <option value="all">All Statuses</option>
           <option value="Todo">Todo</option>
           <option value="In Progress">In Progress</option>
@@ -38,7 +50,7 @@ const FilterBar = () => {
 
       <div className="col-md-2">
         <label className="form-label small fw-bold">Type</label>
-        <select name="taskType" className="form-select" value={filters.taskType}>
+        <select name="taskType" className="form-select" value={filters.taskType} onChange={handleFilterChange}>
           <option value="all">All Types</option>
           <option value="Bug">Bug</option>
           <option value="Feature">Feature</option>
@@ -52,6 +64,7 @@ const FilterBar = () => {
         <button 
           type="button" 
           className="btn btn-outline-secondary w-100" 
+          onClick={handleReset}
           title="Reset Filters"
         >
           <i className="bi bi-arrow-clockwise"></i>

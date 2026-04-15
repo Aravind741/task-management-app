@@ -19,6 +19,13 @@ function* handleFetchData() {
   } catch (e) { console.error(e); }
 }
 
+function* handleDeleteTask(action) {
+  try {
+    yield call(mockApi.deleteTask, action.payload);
+    // Refresh list after deletion
+    yield put({ type: 'FETCH_DATA_TRIGGER' });
+  } catch (e) { alert("Delete failed"); }
+}
 
 export function* rootSaga() {
   yield takeLatest('FETCH_DATA_TRIGGER', handleFetchData);
@@ -29,4 +36,5 @@ export function* rootSaga() {
       yield put(rollbackCreate(action.payload.id));
     }
   });
+  yield takeLatest('DELETE_TASK_TRIGGER', handleDeleteTask);
 }

@@ -1,9 +1,19 @@
+import { useDispatch } from 'react-redux';
+import { deleteTaskOptimistic, setEditingTask } from '../store/slices/taskSlice';
 
 const TaskCard = ({ task }) => {
+  const dispatch = useDispatch();
 
   // Border color logic based on Screenshot (1)
   const isBug = task.taskType === 'Bug';
   const borderColor = isBug ? '#dc3545' : '#f39c12';
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      dispatch(deleteTaskOptimistic(task.id));
+      dispatch({ type: 'DELETE_TASK_TRIGGER', payload: task.id });
+    }
+  };
 
   return (
     <div className="card h-100 shadow-sm border-0 border-start border-4 mb-3" 
@@ -14,6 +24,7 @@ const TaskCard = ({ task }) => {
   {/* Edit Icon */}
   <button 
     className="btn btn-link p-0 text-primary shadow-none" 
+    onClick={() => dispatch(setEditingTask(task.id))}
     title="Edit Task"
   >
     <i className="bi bi-pencil-square fs-5"></i>
@@ -22,6 +33,7 @@ const TaskCard = ({ task }) => {
   {/* Delete Icon */}
   <button 
     className="btn btn-link p-0 text-danger shadow-none" 
+    onClick={handleDelete}
     title="Delete Task"
   >
     <i className="bi bi-trash fs-5"></i>

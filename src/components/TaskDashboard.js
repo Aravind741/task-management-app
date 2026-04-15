@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FilterBar from './FilterBar';
 import TaskList from './TaskList';
-import TaskForm from '../components/TaskForm'; // Fixed typo in import path
+import TaskForm from './TaskForm'; // Fixed typo in import path
+import { setEditingTask } from '../store/slices/taskSlice';
 
 const TaskDashboard = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const TaskDashboard = () => {
 
   const handleCloseModal = () => {
     setIsCreateOpen(false);
+    dispatch(setEditingTask(null)); // Clear editing state so form resets
   };
 
   return (
